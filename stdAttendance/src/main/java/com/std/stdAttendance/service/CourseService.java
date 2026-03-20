@@ -1,7 +1,9 @@
 package com.std.stdAttendance.service;
 
 import com.std.stdAttendance.entity.Course;
+import com.std.stdAttendance.entity.User;
 import com.std.stdAttendance.repository.CourseRepository;
+import com.std.stdAttendance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,34 +16,50 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    // Create Course
+    @Autowired
+    private UserRepository userRepository;
+
     public Course createCourse(Course course) {
+        User teacher = userRepository.findById(course.getTeacherId())
+                .orElseThrow(() -> new RuntimeException("Teacher not found with ID: " + course.getTeacherId()));
+
+        if (!"TEACHER".equals(teacher.getRole())) {
+            throw new RuntimeException("User with ID " + course.getTeacherId() + " is not a teacher");
+        }
         return courseRepository.save(course);
     }
 
-    // Get All Courses
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
-    // Get Course by ID
     public Optional<Course> getCourseById(Long id) {
         return courseRepository.findById(id);
     }
 
-    // Update Course
     public Course updateCourse(Long id, Course updatedCourse) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + id));
 
-        course.setCourseName(updatedCourse.getCourseName());
-        course.setTeacherId(updatedCourse.getTeacherId());
+        if (updatedCourse.getTeacherId() != null) {
+            User teacher = userRepository.findById(updatedCourse.getTeacherId())
+                    .orElseThrow(() -> new RuntimeException("Teacher not found with ID: " + updatedCourse.getTeacherId()));
+
+            if (!"TEACHER".equals(teacher.getRole())) {
+                throw new RuntimeException("User with ID " + updatedCourse.getTeacherId() + " is not a teacher");
+            }
+            course.setTeacherId(updatedCourse.getTeacherId());
+        }
+
+        if (updatedCourse.getCourseName() != null && !updatedCourse.getCourseName().isBlank()) {
+            course.setCourseName(updatedCourse.getCourseName());
+        }
 
         return courseRepository.save(course);
     }
 
-    // Delete Course
     public void deleteCourse(Long id) {
+        if (!courseRepository.existsById(id)) throw new RuntimeException("Course not found with ID: " + id);
         courseRepository.deleteById(id);
     }
 }

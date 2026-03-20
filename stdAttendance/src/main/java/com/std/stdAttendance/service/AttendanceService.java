@@ -24,70 +24,78 @@ public class AttendanceService {
     @Autowired
     private CourseRepository courseRepository;
 
-    // ✅ Mark Attendance (FULL VALIDATION)
     public Attendance markAttendance(Attendance attendance) {
-
-        // 🔹 Check student exists
         User student = userRepository.findById(attendance.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + attendance.getStudentId()));
 
-        // 🔹 Check role = STUDENT
-        if (!student.getRole().equals("STUDENT")) {
-            throw new RuntimeException("User is not a student");
+        if (!"STUDENT".equals(student.getRole())) {
+            throw new RuntimeException("User with ID " + attendance.getStudentId() + " is not a student");
         }
 
-        // 🔹 Check course exists
-        Course course = courseRepository.findById(attendance.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+        courseRepository.findById(attendance.getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + attendance.getCourseId()));
 
-        // 🔹 Validate status
-        if (!attendance.getStatus().equals("PRESENT") &&
-                !attendance.getStatus().equals("ABSENT")) {
-            throw new RuntimeException("Invalid status");
-        }
-
-        // 🔹 If date not given → set today
         if (attendance.getDate() == null) {
             attendance.setDate(LocalDate.now());
+        }
+
+        if (attendance.getDate().isAfter(LocalDate.now())) {
+            throw new RuntimeException("Attendance date cannot be in the future");
+        }
+
+        List<Attendance> existing = attendanceRepository
+                .findByStudentIdAndCourseIdAndDate(
+                        attendance.getStudentId(),
+                        attendance.getCourseId(),
+                        attendance.getDate()
+                );
+        if (!existing.isEmpty()) {
+            throw new RuntimeException("Attendance already marked for student ID "
+                    + attendance.getStudentId() + " in course ID "
+                    + attendance.getCourseId() + " on " + attendance.getDate());
         }
 
         return attendanceRepository.save(attendance);
     }
 
-    // ✅ Get All Attendance
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
     }
 
-    // ✅ Get Attendance by Student
     public List<Attendance> getByStudent(Long studentId) {
+        userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
         return attendanceRepository.findByStudentId(studentId);
     }
 
-    // ✅ Get Attendance by Course
     public List<Attendance> getByCourse(Long courseId) {
+        courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
         return attendanceRepository.findByCourseId(courseId);
     }
 
-    // ✅ Get Attendance by Course & Date
     public List<Attendance> getByCourseAndDate(Long courseId, LocalDate date) {
+        courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
+        if (date == null) throw new RuntimeException("Date is required");
         return attendanceRepository.findByCourseIdAndDate(courseId, date);
     }
 
-    // ✅ Calculate Attendance %
     public double getAttendancePercentage(Long studentId, Long courseId) {
+        userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+        courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + courseId));
 
         List<Attendance> records =
                 attendanceRepository.findByStudentIdAndCourseId(studentId, courseId);
 
-        if (records.isEmpty()) {
-            return 0;
-        }
+        if (records.isEmpty()) return 0.0;
 
         long presentCount = records.stream()
-                .filter(a -> a.getStatus().equals("PRESENT"))
+                .filter(a -> "PRESENT".equals(a.getStatus()))
                 .count();
 
-        return (presentCount * 100.0) / records.size();
+        return Math.round((presentCount * 100.0) / records.size() * 100.0) / 100.0;
     }
 }

@@ -1,6 +1,7 @@
 package com.std.stdAttendance.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,43 +12,29 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Course name is required")
+    @Size(min = 2, max = 150, message = "Course name must be between 2 and 150 characters")
     @Column(nullable = false)
     private String courseName;
 
-    // This will store teacher's userId
+    @NotNull(message = "Teacher ID is required")
+    @Positive(message = "Teacher ID must be a positive number")
     @Column(nullable = false)
     private Long teacherId;
 
     private LocalDateTime createdAt;
 
-    // Constructor
     public Course() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getCourseName() { return courseName; }
+    public void setCourseName(String courseName) { this.courseName = courseName.trim(); }
 
-    public String getCourseName() {
-        return courseName;
-    }
+    public Long getTeacherId() { return teacherId; }
+    public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
-
-    public Long getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Long teacherId) {
-        this.teacherId = teacherId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }

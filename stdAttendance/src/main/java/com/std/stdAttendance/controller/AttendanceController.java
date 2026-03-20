@@ -2,7 +2,9 @@ package com.std.stdAttendance.controller;
 
 import com.std.stdAttendance.entity.Attendance;
 import com.std.stdAttendance.service.AttendanceService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -16,48 +18,41 @@ public class AttendanceController {
     @Autowired
     private AttendanceService attendanceService;
 
-    // ✅ Mark Attendance
     @PostMapping
-    public Attendance markAttendance(@RequestBody Attendance attendance) {
-        return attendanceService.markAttendance(attendance);
+    public ResponseEntity<Attendance> markAttendance(@Valid @RequestBody Attendance attendance) {
+        return ResponseEntity.ok(attendanceService.markAttendance(attendance));
     }
 
-    // ✅ Get All Attendance
     @GetMapping
-    public List<Attendance> getAllAttendance() {
-        return attendanceService.getAllAttendance();
+    public ResponseEntity<List<Attendance>> getAllAttendance() {
+        return ResponseEntity.ok(attendanceService.getAllAttendance());
     }
 
-    // ✅ Get by Student
     @GetMapping("/student/{studentId}")
-    public List<Attendance> getByStudent(@PathVariable Long studentId) {
-        return attendanceService.getByStudent(studentId);
+    public ResponseEntity<List<Attendance>> getByStudent(@PathVariable Long studentId) {
+        return ResponseEntity.ok(attendanceService.getByStudent(studentId));
     }
 
-    // ✅ Get by Course
     @GetMapping("/course/{courseId}")
-    public List<Attendance> getByCourse(@PathVariable Long courseId) {
-        return attendanceService.getByCourse(courseId);
+    public ResponseEntity<List<Attendance>> getByCourse(@PathVariable Long courseId) {
+        return ResponseEntity.ok(attendanceService.getByCourse(courseId));
     }
 
-    // ✅ Get by Course & Date
     @GetMapping("/course/{courseId}/date/{date}")
-    public List<Attendance> getByCourseAndDate(
+    public ResponseEntity<List<Attendance>> getByCourseAndDate(
             @PathVariable Long courseId,
             @PathVariable String date) {
-
-        return attendanceService.getByCourseAndDate(
-                courseId,
-                LocalDate.parse(date)
+        return ResponseEntity.ok(
+                attendanceService.getByCourseAndDate(courseId, LocalDate.parse(date))
         );
     }
 
-    // ✅ Get Attendance Percentage
     @GetMapping("/percentage")
-    public double getPercentage(
+    public ResponseEntity<Double> getPercentage(
             @RequestParam Long studentId,
             @RequestParam Long courseId) {
-
-        return attendanceService.getAttendancePercentage(studentId, courseId);
+        return ResponseEntity.ok(
+                attendanceService.getAttendancePercentage(studentId, courseId)
+        );
     }
 }

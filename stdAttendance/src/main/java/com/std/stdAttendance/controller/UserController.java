@@ -2,10 +2,13 @@ package com.std.stdAttendance.controller;
 
 import com.std.stdAttendance.entity.User;
 import com.std.stdAttendance.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,51 +18,49 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Register
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
+    public ResponseEntity<User> register(@Valid @RequestBody User user) {
         User savedUser = userService.register(user);
-        savedUser.setPassword(null); // hide password
-        return savedUser;
+        savedUser.setPassword(null);
+        return ResponseEntity.ok(savedUser);
     }
 
-    // Login
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
-        User loggedUser = userService.login(user.getEmail(), user.getPassword());
-        loggedUser.setPassword(null); // hide password
-        return loggedUser;
+    public ResponseEntity<User> login(@RequestBody Map<String, String> loginRequest) {
+        User loggedUser = userService.login(
+                loginRequest.get("email"),
+                loginRequest.get("password")
+        );
+        loggedUser.setPassword(null);
+        return ResponseEntity.ok(loggedUser);
     }
 
-    // Get All Users
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Get Students
     @GetMapping("/students")
-    public List<User> getStudents() {
-        return userService.getStudents();
+    public ResponseEntity<List<User>> getStudents() {
+        return ResponseEntity.ok(userService.getStudents());
     }
 
-    // Get Teachers
     @GetMapping("/teachers")
-    public List<User> getTeachers() {
-        return userService.getTeachers();
+    public ResponseEntity<List<User>> getTeachers() {
+        return ResponseEntity.ok(userService.getTeachers());
     }
 
-    // Update
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id,
-                           @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public ResponseEntity<User> updateUser(@PathVariable Long id,
+                                           @Valid @RequestBody User user) {
+        User updated = userService.updateUser(id, user);
+        updated.setPassword(null);
+        return ResponseEntity.ok(updated);
     }
 
-    // Delete
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return "User deleted successfully";
+        return ResponseEntity.ok(Map.of("message", "User deleted successfully"));
     }
 }

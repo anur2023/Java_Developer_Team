@@ -2,47 +2,48 @@ package com.std.stdAttendance.controller;
 
 import com.std.stdAttendance.entity.Course;
 import com.std.stdAttendance.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/courses")
+@CrossOrigin
 public class CourseController {
 
     @Autowired
     private CourseService courseService;
 
-    // Create Course
     @PostMapping
-    public Course createCourse(@RequestBody Course course) {
-        return courseService.createCourse(course);
+    public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course) {
+        return ResponseEntity.ok(courseService.createCourse(course));
     }
 
-    // Get All Courses
     @GetMapping
-    public List<Course> getAllCourses() {
-        return courseService.getAllCourses();
+    public ResponseEntity<List<Course>> getAllCourses() {
+        return ResponseEntity.ok(courseService.getAllCourses());
     }
 
-    // Get Course by ID
     @GetMapping("/{id}")
-    public Course getCourseById(@PathVariable Long id) {
-        return courseService.getCourseById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+    public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
+        Course course = courseService.getCourseById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found with ID: " + id));
+        return ResponseEntity.ok(course);
     }
 
-    // Update Course
     @PutMapping("/{id}")
-    public Course updateCourse(@PathVariable Long id, @RequestBody Course course) {
-        return courseService.updateCourse(id, course);
+    public ResponseEntity<Course> updateCourse(@PathVariable Long id,
+                                               @Valid @RequestBody Course course) {
+        return ResponseEntity.ok(courseService.updateCourse(id, course));
     }
 
-    // Delete Course
     @DeleteMapping("/{id}")
-    public String deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
-        return "Course deleted successfully";
+        return ResponseEntity.ok(Map.of("message", "Course deleted successfully"));
     }
 }

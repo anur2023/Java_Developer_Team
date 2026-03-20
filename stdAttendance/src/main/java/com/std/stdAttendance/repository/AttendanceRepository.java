@@ -15,4 +15,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findByStudentIdAndCourseId(Long studentId, Long courseId);
 
     List<Attendance> findByCourseIdAndDate(Long courseId, LocalDate date);
+
+    // Duplicate attendance check ke liye
+    List<Attendance> findByStudentIdAndCourseIdAndDate(Long studentId, Long courseId, LocalDate date);
 }
