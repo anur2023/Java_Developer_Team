@@ -18,13 +18,17 @@ public class UserController {
     // Register
     @PostMapping("/register")
     public User register(@RequestBody User user) {
-        return userService.register(user);
+        User savedUser = userService.register(user);
+        savedUser.setPassword(null); // hide password
+        return savedUser;
     }
 
     // Login
     @PostMapping("/login")
     public User login(@RequestBody User user) {
-        return userService.login(user.getEmail(), user.getPassword());
+        User loggedUser = userService.login(user.getEmail(), user.getPassword());
+        loggedUser.setPassword(null); // hide password
+        return loggedUser;
     }
 
     // Get All Users

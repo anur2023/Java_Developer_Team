@@ -15,11 +15,23 @@ public class UserService {
 
     // Register
     public User register(User user) {
+
+        // Check duplicate email
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // Validate role
+        if (!user.getRole().equals("STUDENT") && !user.getRole().equals("TEACHER")) {
+            throw new RuntimeException("Invalid role");
+        }
+
         return userRepository.save(user);
     }
 
     // Login
     public User login(String email, String password) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -45,10 +57,22 @@ public class UserService {
         return userRepository.findByRole("TEACHER");
     }
 
-    // Update
+    // Update User
     public User updateUser(Long id, User updatedUser) {
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Check duplicate email (if changed)
+        if (!user.getEmail().equals(updatedUser.getEmail()) &&
+                userRepository.findByEmail(updatedUser.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // Validate role
+        if (!updatedUser.getRole().equals("STUDENT") && !updatedUser.getRole().equals("TEACHER")) {
+            throw new RuntimeException("Invalid role");
+        }
 
         user.setName(updatedUser.getName());
         user.setEmail(updatedUser.getEmail());
@@ -58,8 +82,13 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Delete
+    // Delete User
     public void deleteUser(Long id) {
+
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+
         userRepository.deleteById(id);
     }
 }
