@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/stdAttendance/pom.xml" />
+        <option value="$PROJECT_DIR$/lbr/pom.xml" />
       </list>
     </option>
   </component>
