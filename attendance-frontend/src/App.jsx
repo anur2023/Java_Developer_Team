@@ -1,121 +1,145 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from 'react';
+import Navbar from "./components/Navbar";
+import MarkAttendance from "./pages/attendance/MarkAttendance";
+import AttendanceList from "./pages/attendance/AttendanceList";
+import AttendanceReport from "./pages/attendance/AttendanceReport";
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('attendance-list');
+  const [userName, setUserName] = useState('Test User');
+  const [userRole, setUserRole] = useState('STUDENT');
+
+  useEffect(() => {
+    // FORCE SET TO STUDENT - Clear everything first
+    localStorage.clear();
+    localStorage.setItem('token', 'dummy-token-for-testing');
+    localStorage.setItem('userName', 'Test Student');
+    localStorage.setItem('userRole', 'STUDENT');
+    localStorage.setItem('userId', '3');
+
+    setUserRole('STUDENT');
+    setUserName('Test Student');
+  }, []);
+
+  // Toggle between TEACHER and STUDENT
+  const toggleRole = () => {
+    localStorage.clear();
+
+    if (userRole === 'TEACHER') {
+      localStorage.setItem('userRole', 'STUDENT');
+      localStorage.setItem('userId', '3');
+      localStorage.setItem('userName', 'Test Student');
+      setUserRole('STUDENT');
+      setUserName('Test Student');
+    } else {
+      localStorage.setItem('userRole', 'TEACHER');
+      localStorage.setItem('userId', '1');
+      localStorage.setItem('userName', 'Test Teacher');
+      setUserRole('TEACHER');
+      setUserName('Test Teacher');
+    }
+
+    localStorage.setItem('token', 'dummy-token-for-testing');
+
+    // Force reload
+    window.location.reload();
+  };
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'mark-attendance':
+        return <MarkAttendance />;
+      case 'attendance-list':
+        return <AttendanceList />;
+      case 'attendance-report':
+        return <AttendanceReport />;
+      default:
+        return <AttendanceList />;
+    }
+  };
+
+  const handleNavigation = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+      <div className="app-layout">
+        <Navbar userName={userName} userRole={userRole} />
+
+        {/* Role Toggle Button */}
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 9999,
+          background: userRole === 'TEACHER' ? '#e74c3c' : '#2ecc71',
+          color: 'white',
+          padding: '15px 25px',
+          borderRadius: '10px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.4)',
+          fontWeight: 'bold',
+          fontSize: '15px',
+          border: '2px solid white'
+        }}
+             onClick={toggleRole}
         >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          Current: {userRole}<br/>
+          🔄 Switch to {userRole === 'TEACHER' ? 'STUDENT' : 'TEACHER'}
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <div className="app-content">
+          {/* Sidebar */}
+          <aside className="sidebar">
+            <button className="sidebar-toggle">←</button>
+            <nav className="sidebar-nav">
+              <ul className="sidebar-menu">
+                {userRole === 'TEACHER' && (
+                    <li className="sidebar-menu-item">
+                      <div
+                          className={`sidebar-link ${currentPage === 'mark-attendance' ? 'active' : ''}`}
+                          onClick={() => handleNavigation('mark-attendance')}
+                      >
+                        <span className="sidebar-icon">✓</span>
+                        <span className="sidebar-label">Mark Attendance</span>
+                      </div>
+                    </li>
+                )}
+
+                <li className="sidebar-menu-item">
+                  <div
+                      className={`sidebar-link ${currentPage === 'attendance-list' ? 'active' : ''}`}
+                      onClick={() => handleNavigation('attendance-list')}
+                  >
+                    <span className="sidebar-icon">📋</span>
+                    <span className="sidebar-label">
+                    {userRole === 'STUDENT' ? 'My Attendance' : 'Attendance List'}
+                  </span>
+                  </div>
+                </li>
+
+                <li className="sidebar-menu-item">
+                  <div
+                      className={`sidebar-link ${currentPage === 'attendance-report' ? 'active' : ''}`}
+                      onClick={() => handleNavigation('attendance-report')}
+                  >
+                    <span className="sidebar-icon">📈</span>
+                    <span className="sidebar-label">
+                    {userRole === 'STUDENT' ? 'My Report' : 'Reports'}
+                  </span>
+                  </div>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+
+          <main className="main-content">
+            {renderPage()}
+          </main>
+        </div>
+      </div>
+  );
 }
 
-export default App
+export default App;
