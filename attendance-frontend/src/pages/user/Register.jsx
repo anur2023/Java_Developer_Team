@@ -10,7 +10,7 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "student",
+    role: "STUDENT", // ✅ uppercase
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,12 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      await register({ name: form.name, email: form.email, password: form.password, role: form.role });
+      await register({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        role: form.role, // ✅ STUDENT ya TEACHER
+      });
       navigate("/login");
     } catch (err) {
       setError(err.message || "Registration failed. Please try again.");
@@ -112,8 +117,8 @@ export default function Register() {
             <div className="role-toggle">
               <button
                 type="button"
-                className={`role-btn ${form.role === "student" ? "active" : ""}`}
-                onClick={() => setForm({ ...form, role: "student" })}
+                className={`role-btn ${form.role === "STUDENT" ? "active" : ""}`}
+                onClick={() => setForm({ ...form, role: "STUDENT" })} // ✅ uppercase
               >
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                   <circle cx="7.5" cy="4.5" r="2.5" stroke="currentColor" strokeWidth="1.3"/>
@@ -123,8 +128,8 @@ export default function Register() {
               </button>
               <button
                 type="button"
-                className={`role-btn ${form.role === "teacher" ? "active" : ""}`}
-                onClick={() => setForm({ ...form, role: "teacher" })}
+                className={`role-btn ${form.role === "TEACHER" ? "active" : ""}`}
+                onClick={() => setForm({ ...form, role: "TEACHER" })} // ✅ uppercase
               >
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                   <rect x="1.5" y="2" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>

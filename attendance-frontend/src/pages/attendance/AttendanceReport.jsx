@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Table from '../../components/Table';
 import Button from '../../components/Button';
 import attendanceApi from '../../api/attendanceApi';
-import courseApi from '../../api/courseApi';
-import * as userApi from "../../api/userApi";
+import { getAllCourses } from '../../api/courseApi';
+import { getAllUsers } from '../../api/userApi';
 import './AttendanceReport.css';
 
 const AttendanceReport = () => {
@@ -35,7 +35,7 @@ const AttendanceReport = () => {
 
     const fetchCourses = async () => {
         try {
-            const data = await courseApi.getAllCourses();
+            const data = await getAllCourses();
             setCourses(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -44,7 +44,7 @@ const AttendanceReport = () => {
 
     const fetchStudents = async () => {
         try {
-            const data = await userApi.getAllUsers();
+            const data = await getAllUsers();
             setStudents(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching students:', error);

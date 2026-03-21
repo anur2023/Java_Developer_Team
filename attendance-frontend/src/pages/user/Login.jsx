@@ -23,10 +23,12 @@ export default function Login() {
     setLoading(true);
     try {
       const data = await login(form);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      if (data.user.role === "teacher") navigate("/dashboard");
-      else navigate("/dashboard");
+      // ✅ backend seedha user object deta hai, data.user nahi
+      localStorage.setItem("token", "dummy-token");
+      localStorage.setItem("user", JSON.stringify(data));
+      localStorage.setItem("userRole", data.role);
+      localStorage.setItem("userId", data.id);
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Invalid email or password.");
     } finally {
@@ -97,11 +99,7 @@ export default function Login() {
           </div>
 
           <button type="submit" className="auth-btn" disabled={loading}>
-            {loading ? (
-              <span className="btn-spinner" />
-            ) : (
-              "Sign in"
-            )}
+            {loading ? <span className="btn-spinner" /> : "Sign in"}
           </button>
         </form>
 
