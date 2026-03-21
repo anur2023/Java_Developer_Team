@@ -28,13 +28,32 @@ public class Course {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
+    // ✅ Keep BOTH getter and setter
+    public Long getId() {
+        return id;
+    }
 
-    public String getCourseName() { return courseName; }
-    public void setCourseName(String courseName) { this.courseName = courseName.trim(); }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getTeacherId() { return teacherId; }
-    public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
+    public String getCourseName() {
+        return courseName;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCourseName(String courseName) {
+        this.courseName = courseName.trim();
+    }
+
+    public Long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
