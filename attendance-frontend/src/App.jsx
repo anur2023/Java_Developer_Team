@@ -1,8 +1,13 @@
+<Route path="/" element={<Login />} />
 import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import MarkAttendance from "./pages/attendance/MarkAttendance";
 import AttendanceList from "./pages/attendance/AttendanceList";
 import AttendanceReport from "./pages/attendance/AttendanceReport";
+import Login from "./pages/user/Login";
+import Register from "./pages/user/Register";
+import UserDashboard from "./pages/user/UserDashboard";
 import './App.css';
 
 function App() {
@@ -11,21 +16,17 @@ function App() {
   const [userRole, setUserRole] = useState('STUDENT');
 
   useEffect(() => {
-    // FORCE SET TO STUDENT - Clear everything first
     localStorage.clear();
     localStorage.setItem('token', 'dummy-token-for-testing');
     localStorage.setItem('userName', 'Test Student');
     localStorage.setItem('userRole', 'STUDENT');
     localStorage.setItem('userId', '3');
-
     setUserRole('STUDENT');
     setUserName('Test Student');
   }, []);
 
-  // Toggle between TEACHER and STUDENT
   const toggleRole = () => {
     localStorage.clear();
-
     if (userRole === 'TEACHER') {
       localStorage.setItem('userRole', 'STUDENT');
       localStorage.setItem('userId', '3');
@@ -39,97 +40,83 @@ function App() {
       setUserRole('TEACHER');
       setUserName('Test Teacher');
     }
-
     localStorage.setItem('token', 'dummy-token-for-testing');
-
-    // Force reload
     window.location.reload();
   };
 
   const renderPage = () => {
     switch(currentPage) {
-      case 'mark-attendance':
-        return <MarkAttendance />;
-      case 'attendance-list':
-        return <AttendanceList />;
-      case 'attendance-report':
-        return <AttendanceReport />;
-      default:
-        return <AttendanceList />;
+      case 'mark-attendance': return <MarkAttendance />;
+      case 'attendance-list': return <AttendanceList />;
+      case 'attendance-report': return <AttendanceReport />;
+      default: return <AttendanceList />;
     }
   };
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-  };
-
   return (
+    <Routes>
+
+    {/* Default */}
+    <Route path="/" element={<Login />} />
+
+    {/* Your pages */}
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/dashboard" element={<UserDashboard />} />
+
+    {/* Teammates' pages */}
+    <Route path="/*" element={
       <div className="app-layout">
         <Navbar userName={userName} userRole={userRole} />
 
-        {/* Role Toggle Button */}
-        <div style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          zIndex: 9999,
-          background: userRole === 'TEACHER' ? '#e74c3c' : '#2ecc71',
-          color: 'white',
-          padding: '15px 25px',
-          borderRadius: '10px',
-          cursor: 'pointer',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.4)',
-          fontWeight: 'bold',
-          fontSize: '15px',
-          border: '2px solid white'
-        }}
-             onClick={toggleRole}
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 9999,
+            background: userRole === 'TEACHER' ? '#e74c3c' : '#2ecc71',
+            color: 'white',
+            padding: '15px 25px',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '15px',
+            border: '2px solid white'
+          }}
+          onClick={toggleRole}
         >
-          Current: {userRole}<br/>
+          Current: {userRole}
+          <br />
           🔄 Switch to {userRole === 'TEACHER' ? 'STUDENT' : 'TEACHER'}
         </div>
 
         <div className="app-content">
-          {/* Sidebar */}
           <aside className="sidebar">
             <button className="sidebar-toggle">←</button>
             <nav className="sidebar-nav">
               <ul className="sidebar-menu">
+
                 {userRole === 'TEACHER' && (
-                    <li className="sidebar-menu-item">
-                      <div
-                          className={`sidebar-link ${currentPage === 'mark-attendance' ? 'active' : ''}`}
-                          onClick={() => handleNavigation('mark-attendance')}
-                      >
-                        <span className="sidebar-icon">✓</span>
-                        <span className="sidebar-label">Mark Attendance</span>
-                      </div>
-                    </li>
+                  <li>
+                    <div onClick={() => setCurrentPage('mark-attendance')}>
+                      ✓ Mark Attendance
+                    </div>
+                  </li>
                 )}
 
-                <li className="sidebar-menu-item">
-                  <div
-                      className={`sidebar-link ${currentPage === 'attendance-list' ? 'active' : ''}`}
-                      onClick={() => handleNavigation('attendance-list')}
-                  >
-                    <span className="sidebar-icon">📋</span>
-                    <span className="sidebar-label">
-                    {userRole === 'STUDENT' ? 'My Attendance' : 'Attendance List'}
-                  </span>
+                <li>
+                  <div onClick={() => setCurrentPage('attendance-list')}>
+                    📋 Attendance
                   </div>
                 </li>
 
-                <li className="sidebar-menu-item">
-                  <div
-                      className={`sidebar-link ${currentPage === 'attendance-report' ? 'active' : ''}`}
-                      onClick={() => handleNavigation('attendance-report')}
-                  >
-                    <span className="sidebar-icon">📈</span>
-                    <span className="sidebar-label">
-                    {userRole === 'STUDENT' ? 'My Report' : 'Reports'}
-                  </span>
+                <li>
+                  <div onClick={() => setCurrentPage('attendance-report')}>
+                    📈 Report
                   </div>
                 </li>
+
               </ul>
             </nav>
           </aside>
@@ -139,6 +126,9 @@ function App() {
           </main>
         </div>
       </div>
+    } />
+
+  </Routes>
   );
 }
 

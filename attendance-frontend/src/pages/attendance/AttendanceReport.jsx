@@ -3,7 +3,7 @@ import Table from '../../components/Table';
 import Button from '../../components/Button';
 import attendanceApi from '../../api/attendanceApi';
 import courseApi from '../../api/courseApi';
-import userApi from '../../api/userApi';
+import * as userApi from "../../api/userApi";
 import './AttendanceReport.css';
 
 const AttendanceReport = () => {
@@ -44,7 +44,7 @@ const AttendanceReport = () => {
 
     const fetchStudents = async () => {
         try {
-            const data = await userApi.getStudents();
+            const data = await userApi.getAllUsers();
             setStudents(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching students:', error);
