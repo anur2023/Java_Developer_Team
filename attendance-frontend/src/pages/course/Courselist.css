@@ -1,0 +1,329 @@
+.course-list-page {
+  min-height: 100vh;
+  background: #f8f7f4;
+  padding: 40px 24px;
+  font-family: 'Georgia', serif;
+}
+
+.list-header {
+  max-width: 860px;
+  margin: 0 auto 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.list-title-group {
+  flex: 1;
+}
+
+.list-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+  letter-spacing: -0.5px;
+}
+
+.list-subtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+  font-family: 'Courier New', monospace;
+}
+
+.add-course-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 20px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.add-course-btn:hover {
+  background: #333;
+}
+
+.search-bar {
+  max-width: 860px;
+  margin: 0 auto 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1.5px solid #e0ddd8;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Georgia', serif;
+  background: #fff;
+  color: #1a1a1a;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #1a1a1a;
+}
+
+.search-input::placeholder {
+  color: #bbb;
+}
+
+.courses-grid {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.course-card {
+  background: #fff;
+  border: 1.5px solid #e8e5e0;
+  border-radius: 12px;
+  padding: 24px;
+  transition: border-color 0.2s, transform 0.15s;
+  cursor: pointer;
+  position: relative;
+}
+
+.course-card:hover {
+  border-color: #1a1a1a;
+  transform: translateY(-2px);
+}
+
+.course-card-index {
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: #bbb;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.course-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+
+.course-card-teacher {
+  font-size: 12px;
+  color: #888;
+  font-family: 'Courier New', monospace;
+  margin: 0 0 16px;
+}
+
+.course-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f0ede8;
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.course-card-date {
+  font-size: 11px;
+  color: #bbb;
+  font-family: 'Courier New', monospace;
+}
+
+.card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-edit,
+.btn-delete {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s;
+}
+
+.btn-edit {
+  background: #f0ede8;
+  color: #555;
+}
+
+.btn-edit:hover {
+  background: #e8e3dc;
+}
+
+.btn-delete {
+  background: #fef2f2;
+  color: #c53030;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+}
+
+.empty-state {
+  max-width: 860px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #555;
+  margin: 0 0 8px;
+}
+
+.empty-msg {
+  font-size: 13px;
+  color: #aaa;
+  font-family: 'Courier New', monospace;
+  margin: 0;
+}
+
+.loading-state {
+  max-width: 860px;
+  margin: 60px auto;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  color: #888;
+  font-size: 14px;
+}
+
+.loading-dots::after {
+  content: '';
+  animation: dots 1.2s infinite;
+}
+
+@keyframes dots {
+  0%   { content: '.'; }
+  33%  { content: '..'; }
+  66%  { content: '...'; }
+}
+
+.alert {
+  max-width: 860px;
+  margin: 0 auto 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+
+.alert-success {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Delete confirm overlay */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.confirm-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  border: 1.5px solid #e8e5e0;
+}
+
+.confirm-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 10px;
+}
+
+.confirm-msg {
+  font-size: 13px;
+  color: #888;
+  font-family: 'Courier New', monospace;
+  margin: 0 0 24px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-cancel {
+  padding: 10px 22px;
+  background: #f0ede8;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #e8e3dc;
+}
+
+.btn-confirm-delete {
+  padding: 10px 22px;
+  background: #c53030;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-confirm-delete:hover {
+  background: #9b2c2c;
+}
+
+.btn-confirm-delete:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+}
