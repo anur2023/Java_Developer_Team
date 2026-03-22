@@ -1,7 +1,5 @@
 package com.library.lbr.repository;
 
-
-
 import com.library.lbr.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,12 +14,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByIsbn(String isbn);
 
+    // Custom search — matches BookService.searchBooks(keyword)
     @Query("SELECT b FROM Book b WHERE " +
             "LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(b.author) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Book> searchBooks(@Param("keyword") String keyword);
 
-    List<Book> findByAuthorContainingIgnoreCase(String author);
-
     List<Book> findByTitleContainingIgnoreCase(String title);
+    List<Book> findByAuthorContainingIgnoreCase(String author);
 }

@@ -36,12 +36,13 @@ public class BorrowService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
+        // quantity — matches Book.java on GitHub
         if (book.getQuantity() <= 0) {
             throw new RuntimeException("Book not available");
         }
 
         boolean alreadyBorrowed = borrowRecordRepository
-                .existsByUserUserIdAndBookBookIdAndStatus(userId, bookId, Status.BORROWED);
+                .existsByUser_IdAndBook_IdAndStatus(userId, bookId, Status.BORROWED);
 
         if (alreadyBorrowed) {
             throw new RuntimeException("User already borrowed this book");
@@ -84,11 +85,11 @@ public class BorrowService {
     }
 
     public List<BorrowRecord> getUserHistory(Long userId) {
-        return borrowRecordRepository.findByUserUserId(userId);
+        return borrowRecordRepository.findByUser_Id(userId);
     }
 
     public List<BorrowRecord> getBookHistory(Long bookId) {
-        return borrowRecordRepository.findByBookBookId(bookId);
+        return borrowRecordRepository.findByBook_Id(bookId);
     }
 
     public List<BorrowRecord> getActiveBorrows() {
